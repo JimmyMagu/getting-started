@@ -1,0 +1,8 @@
+heroku login
+
+add .
+
+commit -m "requirements.txt updates"
+
+git push heroku master.
+
