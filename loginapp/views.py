@@ -1,95 +1,22 @@
-from django.shortcuts import render, redirect
-from django.contrib import messag
-Jim"3214" \
-   "es
-from . forms import UserModelForm
-from .models import User
-from django.db import connections
-import mysql.connector
-from operator import itemgetter
+# from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
 
 
-class LoginAndRegister():
-    git
-    remote
-    add
-    origin
-    https: // github.com / JimmyMagu / testapp.git
-    def login(request):
-        con = mysql.connector.connect(host="localhost", user="root",
-                                      passwd="9120", database="loginSystem")
-        cursor = con.cursor()
-        con2 = mysql.connector.connect(host="localhost", user="root",
-                                       passwd="9120", database="loginSystem")
-        cursor2 = con2.cursor()
-        sqlcommand = "select email from loginapp_user"
-        sqlcommand2 = "select password from loginapp_user" <
-        cursor.execute(sqlcommand)
-        cursor2.execute(sqlcommand2)
-        e = []
-        p = []
-
-        for i in cursor:
-            e.append(i)
-        for j in cursor2:
-            p.append(j)
-        res = list(map(itemgetter(0), e))
-        res2 = list(map(itemgetter(0), p))
-        con3 = mysql.connector.connect(host="localhost", user="root",
-                                       passwd="9120", database="loginSystem")
-        cursor3 = con2.cursor()
-
-        if request.method == "POST":
-            email = request.POST['email']
-            password = request.POST['password']
-            k = len(res)
-            i = 1
-            sqlcommand3 = "select fname from loginapp_user where email = email"
-            cursor3.execute(sqlcommand3)
-            lst = []
-            for name in cursor3:
-                name = name
-                name2 = ''.join(name)
-            print(name2)
-            while i < k:
-
-                if res[i] == email and res2[i] == password:
-                    return render(request, 'welcome.html', {'name': name2})
-                    break
-                i += 1
-            else:
-
-                messages.info(request, "Check userName or password")
-                return redirect('login')
-
-        return render(request, 'login.html')
-        return render(request, 'welcome.html')
-
-    def register(request):
-
-        if request.method == "POST":
-            user = User()
-
-            user.fname = request.POST['fname']
-            user.lname = request.POST['lname']
-            user.email = request.POST['email']
-            user.password = request.POST['password']
-            user.repassword = request.POST['repassword']
-            if user.password != user.repassword:
-                messages.info(request, "Passwords not match")
-                return redirect('register')
-            elif user.fname == "" or user.lname == "" or user.email == "" or
-                user.password == "" or user.repassword == "":
-            messages.info(request, "Some fields are missing")
-            return redirect('register')
-        else:
-            messages.info(request, "registration is done go to login")
-            user.save()
-
-        return render(request, 'registration.html')
-
-    else:
-    return render(request, 'registration.html')
+@login_required
+def index(request):
+    return render(request, 'login.html')
 
 
-return render(request, 'registration.html')
+def registration(request):
+    context = {}
+    form = UserCreationForm(request.POST or None)
+    if request.method == "POST":
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return render(request, 'login.html')
+    context['form'] = form
+    return render(request, 'registration.html', context)
